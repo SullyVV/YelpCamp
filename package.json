@@ -1,0 +1,23 @@
+{
+  "name": "yelpcamp",
+  "version": "1.0.0",
+  "description": "yelp-like camp website",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SullyVV/YelpCamp.git"
+  },
+  "author": "G Dong",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SullyVV/YelpCamp/issues"
+  },
+  "homepage": "https://github.com/SullyVV/YelpCamp#readme",
+  "dependencies": {
+    "ejs": "^2.5.1",
+    "express": "^4.14.0"
+  }
+}
