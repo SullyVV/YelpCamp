@@ -2,18 +2,14 @@ var express = require("express");
 var bodyParser = require("body-parser");
 var app = express();
 var mongoose = require("mongoose");
+var Campground = require("./model/Campground");
+var seedDB = require("./seed");
 //cnct to mongo db
 mongoose.connect("mongodb://localhost/YelpCamp");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
-//create a simple schema for campgound
-var CampgroundSchema = new mongoose.Schema({
-   name: String,
-   img: String,
-   desc: String
-});
-//create model based on the schema
-var Campground = mongoose.model("Campground", CampgroundSchema);
+
+seedDB();
 //create two inital data in the database;
 // Campground.create({
 //    name: "Jordan Lake",
@@ -83,6 +79,7 @@ app.get("/campgrounds/:id", function(req, res) {
       }
    })
 })
+// set listener for this server
 app.listen(process.env.PORT, process.env.IP, function() {
    console.log("YelpCamp server started!"); 
 });   
