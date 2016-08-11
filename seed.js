@@ -22,7 +22,14 @@ function seedDB() {
         if (err) {
             console.log(err);
         } else {
-            console.log("db cleared");
+            console.log("Campground DB cleared");
+        }
+    });
+    Comment.remove({}, function(err, newdb){
+        if (err) {
+            console.log(err);
+        } else {
+            console.log("Comment DB cleared");
         }
     });
     

@@ -9,7 +9,8 @@ var seedDB = require("./seed");
 mongoose.connect("mongodb://localhost/YelpCamp");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
-
+//search for /public directory
+app.use(express.static(__dirname + "/public"));
 seedDB();
 app.get("/", function(req, res){
    res.render("landing");
