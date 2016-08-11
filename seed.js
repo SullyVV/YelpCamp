@@ -1,5 +1,6 @@
 var mongoose = require("mongoose");
 var Campground = require("./model/Campground");
+var Comment  = require("./model/Comment");
 //data used to seed up the db
 var data = [
     {
@@ -40,7 +41,7 @@ function seedDB() {
                         console.log(err);
                     } else {
                         //associate comment with campground
-                        newCamp.comment.push(newComment);
+                        newCamp.comments.push(newComment);
                         newCamp.save();
                         console.log("add new Comments");
                     }

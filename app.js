@@ -3,6 +3,7 @@ var bodyParser = require("body-parser");
 var app = express();
 var mongoose = require("mongoose");
 var Campground = require("./model/Campground");
+var Comment = require("./model/Comment");
 var seedDB = require("./seed");
 //cnct to mongo db
 mongoose.connect("mongodb://localhost/YelpCamp");
@@ -10,29 +11,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
 
 seedDB();
-//create two inital data in the database;
-// Campground.create({
-//    name: "Jordan Lake",
-//    img: "https://www.meritagehomes.com/legacy/raleigh-nc/legacy-at-jordan-lake/jordan-lake-1871.jpg.mxw605.mxh311.jpg",
-//    desc: "Jordan Lake State Recreation Area is a North Carolina state park spanning Chatham County, and Wake County North Carolina in the United States. It comprises 4,558 acres of woodlands along the shores of 13,940-acre Jordan Lake."
-// }, function(err, newCamp){
-//    if(err){
-//       console.log(err);
-//    } else {
-//       console.log("created first inital data");
-//    }
-// });
-// Campground.create({
-//    name: "Smoky Mounrain",
-//    img: "https://www.visitnc.com/resimg.php/imgcrop/2/35625/image/800/448/Smokies.jpg",
-//    desc: "Great Smoky Mountains National Park straddles the border of North Carolina and Tennessee. The sprawling landscape encompases lush forests and an abundance of wildflowers that bloom year-round. Streams, rivers and waterfalls appear along hiking routes that include a segment of the Appalachian Trail. An observation tower tops Clingmans Dome, the highest peak, offering scenic views of the mist-covered mountains."
-// }, function(err, newCamp){
-//    if(err){
-//       console.log(err);
-//    } else {
-//       console.log("created first inital data");
-//    }
-// });
 app.get("/", function(req, res){
    res.render("landing");
 });
@@ -43,7 +21,7 @@ app.get("/campgrounds", function(req, res) {
       if (err) {
          console.log(err);
       } else {
-         res.render("index", {campgrounds: allCampgrounds});
+         res.render("campgrounds/index", {campgrounds: allCampgrounds});
       }
    });
 });
@@ -65,20 +43,54 @@ app.post("/campgrounds", function(req, res) {
 });
 //NEW, display form
 app.get("/campgrounds/new", function(req, res) {
-   res.render("new");
+   res.render("campgrounds/new");
 });
 //SHOW, show details about one campground
 app.get("/campgrounds/:id", function(req, res) {
-   //find the campground in index which triggers it 
-   //by using req.params.id
-   Campground.findById(req.params.id, function(err, foundID) {
-      if(err) {
+   //find the campground in index which triggers it by using req.params.id
+   Campground.findById(req.params.id).populate("comments").exec(function(err, foundCamp) {
+      if (err) {
          console.log(err);
       } else {
-         res.render("show", {foundCampground: foundID});
+         res.render("campgrounds/show", {foundCampground: foundCamp});
       }
-   })
-})
+   });
+});
+//====================================================
+//COMMENTS ROUTES
+//====================================================
+//comments new route
+app.get("/campgrounds/:id/comments/new", function(req, res) {
+   //find campground and send to new form
+   Campground.findById(req.params.id, function(err, foundCamp) {
+      if (err) {
+         console.log(err);
+      } else {
+         res.render("comments/new", {campground: foundCamp});
+      }
+   });
+});
+
+// comments create route
+app.post("/campgrounds/:id/comments", function(req, res){
+   Campground.findById(req.params.id, function(err, foundCamp){
+      if (err) {
+         console.log(err);
+      } else {
+         Comment.create(req.body.comment, function(err, comment){
+            if (err) {
+               console.log(err);
+            } else {
+                  foundCamp.comments.push(comment);
+                  foundCamp.save()
+                  res.redirect("/campgrounds/" + req.params.id);
+            }
+         });
+      }
+   });
+});
+
+
 // set listener for this server
 app.listen(process.env.PORT, process.env.IP, function() {
    console.log("YelpCamp server started!"); 
