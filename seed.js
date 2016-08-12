@@ -33,29 +33,29 @@ function seedDB() {
         }
     });
     
-    // add new campgrounds in the database
-    data.forEach(function(eachCamp){
-        Campground.create(eachCamp, function(err, newCamp){
-            if (err) {
-                console.log(err);
-            } else {
-                console.log("add new campground");
-                Comment.create({
-                    text: "this is a nice place, but would be bettwe with internet",
-                    author: "Dong"
-                }, function(err, newComment){
-                    if (err) {
-                        console.log(err);
-                    } else {
-                        //associate comment with campground
-                        newCamp.comments.push(newComment);
-                        newCamp.save();
-                        console.log("add new Comments");
-                    }
-                });
-            }
-        });
-    });
+    // // add new campgrounds in the database
+    // data.forEach(function(eachCamp){
+    //     Campground.create(eachCamp, function(err, newCamp){
+    //         if (err) {
+    //             console.log(err);
+    //         } else {
+    //             console.log("add new campground");
+    //             Comment.create({
+    //                 text: "this is a nice place, but would be bettwe with internet",
+    //                 author: "Dong"
+    //             }, function(err, newComment){
+    //                 if (err) {
+    //                     console.log(err);
+    //                 } else {
+    //                     //associate comment with campground
+    //                     newCamp.comments.push(newComment);
+    //                     newCamp.save();
+    //                     console.log("add new Comments");
+    //                 }
+    //             });
+    //         }
+    //     });
+    // });
     //add commnents
 }
 module.exports = seedDB;
