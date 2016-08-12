@@ -1,11 +1,16 @@
 var express = require("express");
 var bodyParser = require("body-parser");
+var passport = require("passport");
+var LocalStrategy = require("passport-local");
+var passportLocalMongoose = require("passport-local-mongoose");
 var app = express();
 var mongoose = require("mongoose");
 var Campground = require("./model/Campground");
 var Comment = require("./model/Comment");
 var seedDB = require("./seed");
+var User = require("./model/User");
 //cnct to mongo db
+mongoose.Promise = global.Promise;
 mongoose.connect("mongodb://localhost/YelpCamp");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
@@ -15,6 +20,23 @@ seedDB();
 app.get("/", function(req, res){
    res.render("landing");
 });
+//passport configuration
+app.use(require("express-session")({
+   secret: "keyboard cat",
+   resave: false,
+   saveUninitialized: false
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+// this middleware must come after configuration of passport, otherwise req.user is always null
+app.use(function(req, res, next){
+   res.locals.currentUser = req.user;
+   next();
+})
+
 //INDEX, show all campgrounds
 app.get("/campgrounds", function(req, res) {
    //get all campgrounds from data get render
@@ -22,7 +44,7 @@ app.get("/campgrounds", function(req, res) {
       if (err) {
          console.log(err);
       } else {
-         res.render("campgrounds/index", {campgrounds: allCampgrounds});
+         res.render("campgrounds/index", {campgrounds: allCampgrounds, currentUser: req.user});
       }
    });
 });
@@ -61,7 +83,7 @@ app.get("/campgrounds/:id", function(req, res) {
 //COMMENTS ROUTES
 //====================================================
 //comments new route
-app.get("/campgrounds/:id/comments/new", function(req, res) {
+app.get("/campgrounds/:id/comments/new", isLoggedin, function(req, res) {
    //find campground and send to new form
    Campground.findById(req.params.id, function(err, foundCamp) {
       if (err) {
@@ -73,7 +95,7 @@ app.get("/campgrounds/:id/comments/new", function(req, res) {
 });
 
 // comments create route
-app.post("/campgrounds/:id/comments", function(req, res){
+app.post("/campgrounds/:id/comments", isLoggedin, function(req, res){
    Campground.findById(req.params.id, function(err, foundCamp){
       if (err) {
          console.log(err);
@@ -90,8 +112,52 @@ app.post("/campgrounds/:id/comments", function(req, res){
       }
    });
 });
-
-
+//==============================================================================
+// authentication
+//==============================================================================
+//new register form
+app.get("/register", function(req, res) {
+   res.render("register");
+});
+//handle regiser request
+app.post("/register", function(req, res){
+   //register user with username and hashed password
+   var newUser = new User({username: req.body.username});
+   User.register(newUser, req.body.password, function(err, user){
+      if (err){
+         console.log(err);
+         res.redirect("register");
+      } else {
+         //login using "local" strategy with new username
+         console.log("register success");
+         passport.authenticate("local")(req, res, function(){
+            console.log("login success");
+            res.redirect("/campgrounds");
+         });
+      }
+   })
+})
+//new login form
+app.get("/login", function(req, res){
+   res.render("login");
+});
+// handle login request
+app.post("/login", passport.authenticate("local", {
+   successRedirect: "/campgrounds",
+   failRedirect: "/login"
+}), function(req, res){});
+// logout route
+app.get("/logout", function(req, res){
+   req.logout();
+});
+//middleware
+function isLoggedin(req, res, next){
+   if (req.user) {
+      return next();
+   } else {
+      res.redirect("/login");
+   }
+}
 // set listener for this server
 app.listen(process.env.PORT, process.env.IP, function() {
    console.log("YelpCamp server started!"); 
