@@ -33,15 +33,70 @@ router.post("/campgrounds/:id/comments", isLoggedin, function(req, res){
                   // save comment
                   comment.save();
                   foundCamp.comments.push(comment);
-                  foundCamp.save()
+                  foundCamp.save();
                   res.redirect("/campgrounds/" + req.params.id);
             }
          });
       }
    });
 });
+// Edit Comments
+router.get("/campgrounds/:id/comments/:cid/edit", checkUser, function(req, res){
+   //render an edit form
+   var campid = req.params.id;
+   var cid = req.params.cid;
+   Comment.findById(cid, function(err, foundComment){
+      if (err){
+         console.log(err);
+      } else {
+         res.render("comments/edit", {
+            campgroundId: campid, 
+            comment: foundComment});
+      }
+   });
+});
+// Update Comments
+router.put("/:cid", checkUser, function(req, res){
+  // update comment with latest information and redirect to campground show page
+  Comment.findByIdAndUpdate(req.params.cid, {
+     text: req.body.text
+  }, function(err, newComment){
+     if (err) {
+        console.log(err);
+     } else {
+        res.redirect("/campgrounds/");
+     }
+  });
+});
+// Destroy Comments
+router.delete("/:cid", checkUser, function(req, res){
+   Comment.findByIdAndRemove(req.params.cid, function(err){
+      if (err) {
+         console.log(err);
+      } else {
+         res.redirect("/campgrounds/");
+      }
+   });
+});
 
 //middleware
+function checkUser(req, res, next) {
+   if (req.isAuthenticated()) {
+      Comment.findById(req.params.cid, function(err, foundComment) {
+         if (err) {
+            console.log(err);
+         } else {
+            if (foundComment.author.id.equals(req.user._id)){
+               next();
+            } else {
+               res.redirect("back");
+            }
+         }
+      });
+   } else {
+      res.redirect("back");
+   }
+}
 function isLoggedin(req, res, next){
    if (req.user) {
       return next();

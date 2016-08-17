@@ -3,6 +3,7 @@ var bodyParser = require("body-parser");
 var passport = require("passport");
 var LocalStrategy = require("passport-local");
 var passportLocalMongoose = require("passport-local-mongoose");
+var methodOverride = require("method-override");
 var app = express();
 var mongoose = require("mongoose");
 var Campground = require("./model/Campground");
@@ -27,6 +28,8 @@ app.use(require("express-session")({
    resave: false,
    saveUninitialized: false
 }));
+//use override method with this pattern
+app.use(methodOverride("_method"));
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(new LocalStrategy(User.authenticate()));
