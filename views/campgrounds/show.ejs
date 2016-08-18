@@ -40,10 +40,12 @@
                             <p><%= singleComment.text%></p>
                         </div>
                     </div>
-                    <a class="btn btn-warning btn-sm" href="/campgrounds/<%= foundCampground._id%>/comments/<%= singleComment._id%>/edit">Edit</a>
-                    <form id="delete-btn" action="/<%= singleComment._id%>?_method=delete" method="POST">
-                        <button id="delete-btn" class="btn btn-danger btn-sm">Delete</button>
-                    </form>
+                    <% if (currentUser && foundCampground.author.id.equals(currentUser.id)){ %>
+                        <a class="btn btn-warning btn-sm" href="/campgrounds/<%= foundCampground._id%>/comments/<%= singleComment._id%>/edit">Edit</a>
+                        <form id="delete-btn" action="/<%= singleComment._id%>?_method=delete" method="POST">
+                            <button id="delete-btn" class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                    <% } %>
                 <% }) %>
             </div>
         </div>

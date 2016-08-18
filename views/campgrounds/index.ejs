@@ -1,16 +1,16 @@
 <% include ../partials/header.ejs%>
 <div class="container">
-    <div class="jumbotron">
-        <h1> This is campground page!</h1>
-        <h4> Welcome to our YelpCamp webpage and enjoy!</h4>
+    <div  style="background:url(http://cdn.skim.gs/images/zpbbrl7zwy8okqxj9iqp/best-family-camping-spots-in-the-midwest-us-and-great-lakes-region);" class="jumbotron">
+        <h1> Welcome to YelpCamp!</h1>
+        <h4> Enjoy camping!</h4>
         <br>
         <a class="btn btn-primary btn-lg" href="/campgrounds/new">new campgrounds</a>
     </div>
     <div class="row">
         <% campgrounds.forEach(function(campground){ %>
         <div class="col-md-3 col-sm-6">
-            <div class="thumbnail">
-                <img src="<%= campground.img %>"></img>
+            <div class="thumbnail" >
+                <img id="pic" src="<%= campground.img %>"></img>
                 <div class="caption">
                     <h4><%= campground.name%></h4>
                 </div>
@@ -22,4 +22,5 @@
         <% }); %>
     </div>
 </div>
+<srcipt type="text/javascript" src="../../public/yelpCamp.js"></script>
 <% include ../partials/footer.ejs%>

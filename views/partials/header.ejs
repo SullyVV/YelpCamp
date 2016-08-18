@@ -4,6 +4,8 @@
         <title>YelpCamp</title>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"></link>
         <link rel="stylesheet" href="/stylesheets/main.css">
+		<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+		<link href='https://fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css'>
     </head>
     <body>
         <nav class="navbar navbar-default">
@@ -34,5 +36,15 @@
 			</div>
 		</div>
 	</nav>
+	<% if(error && error.length > 0) { %>
+		<div class="alert alert-warning" role="alert">
+			<p> <%= error %></p>
+		</div>
+	<% } %>
+	<% if (success && success.length > 0) { %>
+		<div class="alert alert-success" role="alert">
+			<p> <%= success %></p>
+		</div>
+	<% } %>
 	
  

@@ -10,6 +10,7 @@ var Campground = require("./model/Campground");
 var Comment = require("./model/Comment");
 var seedDB = require("./seed");
 var User = require("./model/User");
+var flash = require("connect-flash");
 // require route files where we define each routes.
 var commentRouter = require("./routes/comment");
 var indexRouter = require("./routes/index");
@@ -35,9 +36,13 @@ app.use(passport.session());
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
+//use flash
+app.use(flash());
 // this middleware must come after configuration of passport, otherwise req.user is always null
 app.use(function(req, res, next){
    res.locals.currentUser = req.user;
+   res.locals.error = req.flash("error");
+   res.locals.success = req.flash("success");
    next();
 })
 // use routers exports by each router.

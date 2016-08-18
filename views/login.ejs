@@ -1,8 +1,12 @@
 <% include ./partials/header.ejs%>
-<h1>Welcome to Login Page!</h1>
-<form action="/login" method="post">
-    <input type="input" name="username" placeholder="username"></input>
-    <input type="password" name="password" placeholder="password"></intpu>
-    <button>Submit</button>
-</form>
+<div>
+    <h1 class="lrH1">Log in</h1>
+    <form class="lrForm" action="/login" method="post">
+          <input class="lrInput" type="input" name="username" placeholder="username">
+          <br>
+          <input class="lrInput" type="password" name="password" placeholder="password">
+          <br>
+        <button style="margin-left:50%; margin-right:50%; margin-top:25px" class="btn btn-lg btn-primary">Sign in</button>
+    </form>
+</div>
 <% include ./partials/footer.ejs%>

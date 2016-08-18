@@ -1,8 +1,10 @@
 <% include ./partials/header.ejs%>
-<h1>Welcome to Register Page!</h1>
-<form action="/register" method="POST">
-    <input type="text" name="username" placeholder="username"></input>
-    <input type="password" name="password" placeholder="password"></input>
-    <button>Submit</button>
+<h1 class="lrH1">Sign up</h1>
+<form class="lrForm" action="/register" method="POST">
+    <input class="lrInput" type="text" name="username" placeholder="username"></input>
+    <br>
+    <input class="lrInput" type="password" name="password" placeholder="password"></input>
+    <br>
+    <button style="margin-left:50%; margin-right:50%; margin-top:25px" class="btn btn-lg btn-primary">Sign up</button>
 </form>
 <% include ./partials/footer.ejs%>
